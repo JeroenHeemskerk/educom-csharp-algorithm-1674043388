@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Organizer
@@ -7,11 +8,48 @@ namespace Organizer
     {
         public static void Main(string[] args)
         {
-            // Press <F5> to run this code, when "Hello World!" appears in a black box, remove the line below and write your code below.
+            var Program = new Program();
+            var ShiftHighestSort = new ShiftHighestSort();
+
+            List<int> rtnList = Program.ListRandomIntegers(10);
+            List<int> sortedList = ShiftHighestSort.Sort(rtnList);
             Console.WriteLine("Hello World!");
-            ShowList("Example of ShowList", new List<int>() { -33, 3, 2, 2, 3, 34, 34, 32, 1, 3, 5, 3, -22, -99, 33, -22, 11, 3, 33, 12, -2, -21, 4, 34, 22, 15, 34,-22 });
+            ShowList("Random list: ", rtnList);
+            ShowList("Sorted list: ", sortedList);
+            Console.WriteLine("Sorted list valid: " + Program.IsListSorted(sortedList));
+
+            // Press <F5> to run this code, when "Hello World!" appears in a black box, remove the line below and write your code below.
+            // Console.WriteLine("Hello World!");
+            //ShowList("Example of ShowList", new List<int>() { -33, 3, 2, 2, 3, 34, 34, 32, 1, 3, 5, 3, -22, -99, 33, -22, 11, 3, 33, 12, -2, -21, 4, 34, 22, 15, 34, -22 });
         }
 
+        public  List<int> ListRandomIntegers(int n)
+        {
+            var rand = new Random();
+            var rtnList = new List<int>();
+
+            for (int i =0; i < n; i++)
+            {
+                rtnList.Add(rand.Next(-99, 99));
+            }
+
+            return rtnList;
+        }
+
+        public bool IsListSorted(List<int> list)
+        {
+            bool sorted = true;
+            
+            for (int i = 1; i < list.Count - 1; i++)
+            {
+                if (!(list[i] >= list[i-1]))
+                {
+                    sorted = false; break;
+                }
+                
+            }
+            return sorted;
+        }
 
         /* Example of a static function */
 
