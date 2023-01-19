@@ -13,9 +13,8 @@ namespace Organizer
 
             List<int> rtnList = Program.ListRandomIntegers(10);
             List<int> sortedList = ShiftHighestSort.Sort(rtnList);
-            Console.WriteLine("Hello World!");
-            ShowList("Random list: ", rtnList);
-            ShowList("Sorted list: ", sortedList);
+            ShowList("Random list", rtnList);
+            ShowList("Sorted list", sortedList);
             Console.WriteLine("Sorted list valid: " + Program.IsListSorted(sortedList));
 
             // Press <F5> to run this code, when "Hello World!" appears in a black box, remove the line below and write your code below.
