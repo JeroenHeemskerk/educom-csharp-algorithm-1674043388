@@ -26,9 +26,6 @@ namespace BornToMove
                 //ConnectToMySql.ReadAllData();
                 ConnectToMySql.GetRandomMove();
                 Program.UserRating();
-
-                
-
             }
             else
             {
@@ -46,13 +43,9 @@ namespace BornToMove
                 {
                     Program.MakeNewMove(ConnectToMySql, moves);
                 }
-                
             }
-
-
-
-
         }
+
         public void UserRating()
         {
             Console.WriteLine("When you are done with the move pls rate it from 1 to 5.");
