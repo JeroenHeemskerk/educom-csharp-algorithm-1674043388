@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BornToMove
+namespace BornToMove.DAL
 {
+    [Table(name:"move")]
     public class Move
     {
         public int Id { get; set; }
@@ -13,13 +15,6 @@ namespace BornToMove
         public  string Description { get; set; } = "";
         public  int SweatRate { get; set; }
 
-        public Move(int id, string name, string description, int sweatRate)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            SweatRate = sweatRate;
-        }
 
         public void ShowAll()
         {
