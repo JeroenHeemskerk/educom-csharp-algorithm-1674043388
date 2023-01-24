@@ -26,13 +26,13 @@ namespace BornToMove.Business
             return moves;
         }
 
-        public bool CreateNewMove(string moveName, string moveDescription, int sweatRateNumber)
+        public void CreateNewMove(string moveName, string moveDescription, int sweatRateNumber)
         {
-            var moves = moveCrud.GetMoveByName(moveName);
-            if (moves != null) { return false; }
+            //var moves = moveCrud.GetMoveByName(moveName);
+            //if (moves != null) { return false; }
 
             moveCrud.Create(moveName, moveDescription, sweatRateNumber);
-            return true;
+            //return true;
         }
 
         public void UpdateMove (Move move)
@@ -44,6 +44,13 @@ namespace BornToMove.Business
         {
             var move = moveCrud.GetMoveById(id);
             return move;
+        }
+
+        public bool CheckNewMoveName (string moveName)
+        {
+            var moves = moveCrud.GetMoveByName(moveName);
+            if (moves != null) { return false; }
+            return true;
         }
 
     }

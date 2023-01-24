@@ -49,7 +49,8 @@ namespace BornToMove.DAL
 
         public List<Move> GetAllMoves() 
         {
-            var moves = moveContext.Move.ToList();
+            List<Move> moves = new List<Move>(); 
+            moves = moveContext.Move.ToList();
             return moves;
         }
     }

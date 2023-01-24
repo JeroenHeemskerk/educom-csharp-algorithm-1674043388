@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
 using BornToMove.Business;
 using BornToMove.DAL;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BornToMove
 {
@@ -51,6 +52,7 @@ namespace BornToMove
                 {
                     var id = moves[number].Id;
                     var move = program.GetMoveById(id);
+                    //program.UpdateMove(move);
                     move.ShowAll();
                     program.UserRating();
                 } else 
@@ -63,13 +65,30 @@ namespace BornToMove
         private int AskForNumber(int min, int max) 
         {
             var str = Console.ReadLine();
+            Console.WriteLine();
             int value;
             while (!int.TryParse(str, out value) || value < min || value > max) 
             {
-                Console.WriteLine($"Number: {value} is not correct. It should be a number between {min} and {max}. Please enter a valid number.");
+                Console.WriteLine($"Value: {str} is not correct. It should be a number between {min} and {max}. Please enter a valid number.");
+                Console.WriteLine();
                 str= Console.ReadLine();
+                Console.WriteLine();
             }
             return value;
+        }
+
+        private string AskForString(string nameString)
+        {
+            var str = Console.ReadLine() ;
+            Console.WriteLine();
+            while (str.IsNullOrEmpty() )
+            {
+                Console.WriteLine($"The {nameString} can not be empty. Set a {nameString}.");
+                Console.WriteLine() ;
+                str= Console.ReadLine();
+                Console.WriteLine();
+            }
+            return str;
         }
 
         private Move GetRandomMove()
@@ -110,7 +129,7 @@ namespace BornToMove
 
         public void UserRating()
         {
-            Console.WriteLine("When you are done with the move pls rate it from 1 to 5.");
+            Console.WriteLine("When you are done with the move, pls rate it from 1 to 5.");
             Console.WriteLine();
             var moveRating = AskForNumber(1, 5);
             Console.WriteLine($"You have given the move a rating of {moveRating}.");
@@ -126,7 +145,7 @@ namespace BornToMove
         public int PickMoveOptionFromList(Dictionary<int, Move> moves)
         {
             Console.WriteLine("Pick a number from the the list to get that move.");
-            Console.WriteLine("If you choose the number 0 you can make a new move");
+            Console.WriteLine("If you choose the number 0 you can make a new move.");
             Console.WriteLine();
             var numberInput = AskForNumber(0, moves.Count);
             Console.WriteLine($"You have chosen the number: {numberInput}");
@@ -139,47 +158,81 @@ namespace BornToMove
         {
             Console.WriteLine("Type the name of the new move.");
             Console.WriteLine();
-            var moveName = Console.ReadLine();
-            Console.WriteLine();
-
-            while (moveName == null)
-            {
-                Console.WriteLine("The name can not be empty. Choose a name");
-                Console.WriteLine();
-                moveName= Console.ReadLine();
-                Console.WriteLine();
-            }
-
+            var moveName = AskForString("name");
             Console.WriteLine($"Type the description of the move: {moveName}.");
             Console.WriteLine();
-            var moveDescription = Console.ReadLine();
-            Console.WriteLine();
-            while (moveDescription == null)
-            {
-                Console.WriteLine("The description can not be empty. Choose description");
-                Console.WriteLine();
-                moveDescription = Console.ReadLine();
-                Console.WriteLine();
-            }
-
+            var moveDescription = AskForString("description");
             Console.WriteLine("Type the sweatRate. It has to be a number ranging from 1 to 5.");
             Console.WriteLine();
             int sweatRateNumber = AskForNumber(1, 5);
 
-            bool succes = buMove.CreateNewMove(moveName, moveDescription, sweatRateNumber);
+            //bool succes = buMove.CreateNewMove(moveName, moveDescription, sweatRateNumber);
+            bool succes = buMove.CheckNewMoveName(moveName);
 
             while (succes == false)
             {
-                Console.WriteLine("The name: {moveName} is already taken. Choose a new name");
-                moveName = Console.ReadLine();
-                while (moveName == null)
+                Console.WriteLine($"The name: {moveName} is already taken. Choose a new name.");
+                Console.WriteLine();
+                moveName = AskForString("name");
+                //succes = buMove.CreateNewMove(moveName, moveDescription, sweatRateNumber);
+                succes = buMove.CheckNewMoveName(moveName);
+            }
+            buMove.CreateNewMove(moveName, moveDescription, sweatRateNumber);
+        }
+
+        public void UpdateMove(Move move)
+        {
+            int number = -1;
+            string moveName = null;
+            string moveDescription = null;
+            int moveSweatRate = -1;
+            while (number != 0) 
+            {
+                Console.WriteLine("To update the name type: 1, the description type: 2, the sweatRate type: 3.");
+                Console.WriteLine("To start the update type: 0");
+                Console.WriteLine();
+                number = AskForNumber(0, 3);
+            
+                if (number == 1)
                 {
-                    Console.WriteLine("The name can not be empty. Choose a name");
+                    Console.WriteLine("You have chosen to update the name. Type the new name.");
                     Console.WriteLine();
-                    moveName = Console.ReadLine();
-                    Console.WriteLine();
+                    moveName = AskForString("name");
+                    var succes = buMove.CheckNewMoveName(moveName);
+                    while (succes == false)
+                    {
+                        Console.WriteLine($"The name: {moveName} is already taken. Choose a new name.");
+                        Console.WriteLine();
+                        moveName = AskForString("name");
+                        succes = buMove.CheckNewMoveName(moveName);
+                    }
+                    move.Name = moveName;
                 }
-                succes = buMove.CreateNewMove(moveName, moveDescription, sweatRateNumber);
+
+                if (number == 2)
+                {
+                    Console.WriteLine("You have chosen to update the description. Type the new description.");
+                    Console.WriteLine();
+                    moveDescription = AskForString("description");
+                    move.Description = moveDescription;
+                }
+
+                if (number == 3)
+                {
+                    Console.WriteLine("You have chosen to update the sweatRate. Type the new sweatRate.");
+                    Console.WriteLine();
+                    moveSweatRate = AskForNumber(1,5);
+                    move.SweatRate = moveSweatRate;
+                }
+            }
+            if (moveName == null && moveDescription == null && moveSweatRate == -1)
+            {
+                Console.WriteLine("You have given no values to update.");
+                Console.WriteLine("Ending program...");
+            } else
+            {
+                Console.WriteLine("Starting update...");
+                buMove.UpdateMove(move);
             }
         }
     }

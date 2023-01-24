@@ -4,7 +4,7 @@ namespace BornToMove.DAL
 {
     public class MoveContext : DbContext
     {
-        public DbSet<Move> Move { get; }
+        public DbSet<Move> Move { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
