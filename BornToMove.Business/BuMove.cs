@@ -16,7 +16,7 @@ namespace BornToMove.Business
             var moves = moveCrud.GetAllMoves();
             var countMoves = moves.Count;
             var rand = new Random();
-            var move = moves[rand.Next(0, countMoves -1)];
+            var move = moves[rand.Next(0, countMoves)];
             return move;
         }
 
@@ -53,5 +53,16 @@ namespace BornToMove.Business
             return true;
         }
 
+        public void AddRatingAndVote(Move move, double rating, double vote)
+        {
+            var moveRating = new MoveRating { Move = move, Rating = rating, Vote = vote };
+            moveCrud.CreateMoveRating(moveRating);
+        }
+
+        public double GetAverageRatingByMoveId(int moveId)
+        {
+            var averageRating = moveCrud.GetAverageRatingByMoveId(moveId);
+            return averageRating;
+        }
     }
 }

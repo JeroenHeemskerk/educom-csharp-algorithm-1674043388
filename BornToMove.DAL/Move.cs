@@ -15,13 +15,16 @@ namespace BornToMove.DAL
         public  string Description { get; set; } = "";
         public  int SweatRate { get; set; }
 
+        public ICollection<MoveRating>? Ratings { get; set; }
+
 
         public void ShowAll()
         {
             Console.WriteLine("Name: " + Name);
             Console.WriteLine("Description: " + Description);
             Console.WriteLine("SweatRate: " + SweatRate);
-            Console.WriteLine();
+            //Console.WriteLine("Average rating: " + Ratings);
+            //Console.WriteLine();
         }
 
         public void ShowMoveId() { Console.WriteLine("Id: " + Id); }

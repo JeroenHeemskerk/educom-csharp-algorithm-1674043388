@@ -5,6 +5,7 @@ using Google.Protobuf.WellKnownTypes;
 using BornToMove.Business;
 using BornToMove.DAL;
 using Microsoft.IdentityModel.Tokens;
+using System.Xml.Linq;
 
 namespace BornToMove
 {
@@ -35,8 +36,8 @@ namespace BornToMove
                 //ConnectToMySql.ReadAllData();
                 //ConnectToMySql.GetRandomMove();
                 var move = program.GetRandomMove();
-                move.ShowAll();
-                program.UserRating();
+                program.MoveShowAll(move);
+                program.UserRating(move);
             }
             else
             {
@@ -46,6 +47,7 @@ namespace BornToMove
                 //var moves = ConnectToMySql.ReadAllOptions();
                 //var number = Program.PickMoveOptionFromList(moves);
                 var moves = program.GetAllMovesDictionary();
+                //var moves = program.GetAllMoves();
                 program.ShowAllMoves(moves);
                 var number = program.PickMoveOptionFromList(moves);
                 if (number != 0)
@@ -53,8 +55,8 @@ namespace BornToMove
                     var id = moves[number].Id;
                     var move = program.GetMoveById(id);
                     //program.UpdateMove(move);
-                    move.ShowAll();
-                    program.UserRating();
+                    program.MoveShowAll(move);
+                    program.UserRating(move);
                 } else 
                 {
                     program.MakeNewMove();
@@ -77,6 +79,22 @@ namespace BornToMove
             return value;
         }
 
+        private double AskForNumberDouble(double min, double max)
+        {
+            var str = Console.ReadLine();
+            Console.WriteLine();
+            double value;
+            while (!double.TryParse(str, out value) || value < min || value > max)
+            {
+                // ToString("N1") is to have it show 1 decimal.
+                Console.WriteLine($"Value: {str} is not correct. It should be a number between {min.ToString("N1")} and {max.ToString("N1")}. Please enter a valid number.");
+                Console.WriteLine();
+                str = Console.ReadLine();
+                Console.WriteLine();
+            }
+            return value;
+        }
+
         private string AskForString(string nameString)
         {
             var str = Console.ReadLine() ;
@@ -91,6 +109,13 @@ namespace BornToMove
             return str;
         }
 
+        private void MoveShowAll(Move move)
+        {
+            move.ShowAll();
+            Console.WriteLine("Average rating: " + buMove.GetAverageRatingByMoveId(move.Id));
+            Console.WriteLine();
+        }
+
         private Move GetRandomMove()
         {
             var move = buMove.GetRandomMove();
@@ -99,27 +124,41 @@ namespace BornToMove
 
         private Dictionary<int, Move> GetAllMovesDictionary()
         {
-            int number = 1;
-            var result = new Dictionary<int, Move>();
+            //int number = 1;
             var moves = buMove.GetListAllMoves();
-            foreach ( var move in moves )
-            {
-                result.Add(number, move);
-                number++;
-            }
+            var result = moves.ToDictionary(move => moves.IndexOf(move)+1, move => move);
+            //foreach (var move in moves)
+            //{
+            //    result.Add(number, move);
+            //    number++;
+            //}
             return result;
         }
 
-        private void ShowAllMoves (Dictionary<int, Move> moves)
+        private void ShowAllMoves(Dictionary<int, Move> moves)
         {
             foreach (KeyValuePair<int, Move> element in moves)
             {
                 Console.WriteLine("Number: " + element.Key);
                 element.Value.ShowMoveName();
                 element.Value.ShowMoveSweatRate();
+                Console.WriteLine("Average rating: " + buMove.GetAverageRatingByMoveId(element.Value.Id));
                 Console.WriteLine();
             }
         }
+
+        //private List<Move> GetAllMoves()
+        //{
+        //    var moves = buMove.GetListAllMoves();
+        //    return moves;
+        //}
+
+        //private void ShowAllMoves(List<Move> moves)
+        //{
+        //    var test = from move in moves
+        //    select new { number = moves.IndexOf(move), name = move.Name, sweatRate = move.SweatRate, averageRating = buMove.GetAverageRatingByMoveId(move.Id) }
+        //    ;
+        //}
 
         private Move GetMoveById(int id)
         {
@@ -127,18 +166,19 @@ namespace BornToMove
             return move;
         }
 
-        public void UserRating()
+        public void UserRating(Move move)
         {
-            Console.WriteLine("When you are done with the move, pls rate it from 1 to 5.");
+            Console.WriteLine("When you are done with the move, pls rate it from 1,0 to 5,0.");
             Console.WriteLine();
-            var moveRating = AskForNumber(1, 5);
+            var moveRating = AskForNumberDouble(1.0 , 5.0);
             Console.WriteLine($"You have given the move a rating of {moveRating}.");
             Console.WriteLine();
-            Console.WriteLine("Please also rate the intensitie from 1 to 5.");
+            Console.WriteLine("Please also rate the intensitie from 1,0 to 5,0.");
             Console.WriteLine();
-            var intensitieRating = AskForNumber(1, 5);
+            var intensitieRating = AskForNumberDouble(1.0 , 5.0);
             Console.WriteLine($"You have given the intensitie a rating of {intensitieRating}.");
             Console.WriteLine();
+            buMove.AddRatingAndVote(move, moveRating, intensitieRating);
 
         }
 

@@ -22,6 +22,12 @@ namespace BornToMove.DAL
             moveContext.SaveChanges();
         }
 
+        public void CreateMoveRating(MoveRating moveRating)
+        {
+            moveContext.Add(moveRating);
+            moveContext.SaveChanges();
+        }
+
         public void Update(Move move) 
         {
             moveContext.Move.Update(move);
@@ -52,6 +58,21 @@ namespace BornToMove.DAL
             List<Move> moves = new List<Move>(); 
             moves = moveContext.Move.ToList();
             return moves;
+        }
+
+        public double GetAverageRatingByMoveId(int moveId)
+        {
+            var ratings = moveContext.MoveRating.ToList()
+                //.Where(rating => rating.Move.Id == moveId)
+                //.Select(rating => rating.Rating)
+                //.Average()
+                ;
+
+            var averageRating = (from rating in ratings // moveContext.MoveRating.ToList()
+                                 where (rating.Move.Id == moveId)
+                                select rating.Rating).DefaultIfEmpty().Average();
+
+            return averageRating;
         }
     }
 }
