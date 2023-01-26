@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BornToMove.DAL
 {
     public class MoveCrud
     {
         private MoveContext moveContext;
-        public MoveCrud() 
+        public MoveCrud()
         {
             this.moveContext = new MoveContext();
-
         }
-
-        public void Create(string moveName, string moveDescription, int sweatRateNumber) 
+       
+        public void Create(string moveName, string moveDescription, int sweatRateNumber)
         {
             var move = new Move { Name = moveName, Description = moveDescription, SweatRate = sweatRateNumber };
             moveContext.Add(move);
@@ -28,22 +24,30 @@ namespace BornToMove.DAL
             moveContext.SaveChanges();
         }
 
-        public void Update(Move move) 
+        public void Update(Move move)
         {
             moveContext.Move.Update(move);
             moveContext.SaveChanges();
         }
 
-        public void Delete(int id) 
+        public void Delete(int id)
         {
             var move = new Move { Id = id };
             moveContext.Remove(move);
             moveContext.SaveChanges();
         }
 
-        public Move GetMoveById(int id) 
+        public Move GetMoveById(int id)
         {
-            var move = moveContext.Move.Single(a =>a.Id == id);
+            var move = moveContext.Move.Select(move => new Move()
+            {
+                Id = move.Id,
+                Name = move.Name,
+                Description = move.Description,
+                SweatRate = move.SweatRate,
+                Ratings = move.Ratings,
+                AverageRating = move.Ratings.DefaultIfEmpty().Average(r => r.Rating)
+            }).Single(a => a.Id == id);
             return move;
         }
 
@@ -53,10 +57,18 @@ namespace BornToMove.DAL
             return move;
         }
 
-        public List<Move> GetAllMoves() 
+        public List<Move> GetAllMoves()
         {
-            List<Move> moves = new List<Move>(); 
-            moves = moveContext.Move.ToList();
+            var test = moveContext.Move.ToList();
+            var moves = moveContext.Move.Select(move => new Move()
+            {
+                Id = move.Id,
+                Name = move.Name,
+                Description = move.Description,
+                SweatRate = move.SweatRate,
+                Ratings = move.Ratings
+                //AverageRating = move.Ratings != null ? move.Ratings.Average(r => r.Rating) : 0
+            }).ToList();
             return moves;
         }
 
@@ -70,7 +82,7 @@ namespace BornToMove.DAL
 
             var averageRating = (from rating in ratings // moveContext.MoveRating.ToList()
                                  where (rating.Move.Id == moveId)
-                                select rating.Rating).DefaultIfEmpty().Average();
+                                 select rating.Rating).DefaultIfEmpty().Average();
 
             return averageRating;
         }

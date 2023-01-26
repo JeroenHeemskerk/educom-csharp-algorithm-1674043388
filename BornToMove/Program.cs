@@ -112,8 +112,6 @@ namespace BornToMove
         private void MoveShowAll(Move move)
         {
             move.ShowAll();
-            Console.WriteLine("Average rating: " + buMove.GetAverageRatingByMoveId(move.Id));
-            Console.WriteLine();
         }
 
         private Move GetRandomMove()
@@ -142,7 +140,7 @@ namespace BornToMove
                 Console.WriteLine("Number: " + element.Key);
                 element.Value.ShowMoveName();
                 element.Value.ShowMoveSweatRate();
-                Console.WriteLine("Average rating: " + buMove.GetAverageRatingByMoveId(element.Value.Id));
+                element.Value.ShowMoveAverageRating();
                 Console.WriteLine();
             }
         }
@@ -156,7 +154,7 @@ namespace BornToMove
         //private void ShowAllMoves(List<Move> moves)
         //{
         //    var test = from move in moves
-        //    select new { number = moves.IndexOf(move), name = move.Name, sweatRate = move.SweatRate, averageRating = buMove.GetAverageRatingByMoveId(move.Id) }
+        //               select new { number = moves.IndexOf(move), name = move.Name, sweatRate = move.SweatRate, averageRating = buMove.GetAverageRatingByMoveId(move.Id) }
         //    ;
         //}
 
