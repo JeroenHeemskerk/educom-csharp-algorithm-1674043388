@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Google.Protobuf.WellKnownTypes;
-using BornToMove.Business;
+﻿using BornToMove.Business;
 using BornToMove.DAL;
 using Microsoft.IdentityModel.Tokens;
-using System.Xml.Linq;
 
 namespace BornToMove
 {
@@ -52,28 +47,29 @@ namespace BornToMove
                 var number = program.PickMoveOptionFromList(moves);
                 if (number != 0)
                 {
-                    var id = moves[number].Id;
+                    var id = moves[number].Move.Id;
                     var move = program.GetMoveById(id);
                     //program.UpdateMove(move);
                     program.MoveShowAll(move);
                     program.UserRating(move);
-                } else 
+                }
+                else
                 {
                     program.MakeNewMove();
                 }
             }
         }
 
-        private int AskForNumber(int min, int max) 
+        private int AskForNumber(int min, int max)
         {
             var str = Console.ReadLine();
             Console.WriteLine();
             int value;
-            while (!int.TryParse(str, out value) || value < min || value > max) 
+            while (!int.TryParse(str, out value) || value < min || value > max)
             {
                 Console.WriteLine($"Value: {str} is not correct. It should be a number between {min} and {max}. Please enter a valid number.");
                 Console.WriteLine();
-                str= Console.ReadLine();
+                str = Console.ReadLine();
                 Console.WriteLine();
             }
             return value;
@@ -97,34 +93,45 @@ namespace BornToMove
 
         private string AskForString(string nameString)
         {
-            var str = Console.ReadLine() ;
+            var str = Console.ReadLine();
             Console.WriteLine();
-            while (str.IsNullOrEmpty() )
+            while (str.IsNullOrEmpty())
             {
                 Console.WriteLine($"The {nameString} can not be empty. Set a {nameString}.");
-                Console.WriteLine() ;
-                str= Console.ReadLine();
+                Console.WriteLine();
+                str = Console.ReadLine();
                 Console.WriteLine();
             }
             return str;
         }
 
-        private void MoveShowAll(Move move)
+        private void MoveShowAll(MoveWithRating move)
         {
-            move.ShowAll();
+            Console.WriteLine("Name: " + move.Move.Name);
+            Console.WriteLine("Description: " + move.Move.Description);
+            Console.WriteLine("SweatRate: " + move.Move.SweatRate);
+            Console.WriteLine("Average rating: " + move.AverageRating);
+            Console.WriteLine();
         }
 
-        private Move GetRandomMove()
+        public void ShowMoveId(MoveWithRating move) { Console.WriteLine("Id: " + move.Move.Id); }
+        public void ShowMoveName(MoveWithRating move) { Console.WriteLine("Name: " + move.Move.Name); }
+        public void ShowMoveDescription(MoveWithRating move) { Console.WriteLine("Description: " + move.Move.Description); }
+        public void ShowMoveSweatRate(MoveWithRating move) { Console.WriteLine("SweatRate: " + move.Move.SweatRate); }
+        public void ShowMoveAverageRating(MoveWithRating move) { Console.WriteLine("Average rating: " + move.AverageRating); }
+
+
+        private MoveWithRating GetRandomMove()
         {
             var move = buMove.GetRandomMove();
             return move;
         }
 
-        private Dictionary<int, Move> GetAllMovesDictionary()
+        private Dictionary<int, MoveWithRating> GetAllMovesDictionary()
         {
             //int number = 1;
             var moves = buMove.GetListAllMoves();
-            var result = moves.ToDictionary(move => moves.IndexOf(move)+1, move => move);
+            var result = moves.ToDictionary(move => moves.IndexOf(move) + 1, move => move);
             //foreach (var move in moves)
             //{
             //    result.Add(number, move);
@@ -133,14 +140,14 @@ namespace BornToMove
             return result;
         }
 
-        private void ShowAllMoves(Dictionary<int, Move> moves)
+        private void ShowAllMoves(Dictionary<int, MoveWithRating> moves)
         {
-            foreach (KeyValuePair<int, Move> element in moves)
+            foreach (KeyValuePair<int, MoveWithRating> element in moves)
             {
                 Console.WriteLine("Number: " + element.Key);
-                element.Value.ShowMoveName();
-                element.Value.ShowMoveSweatRate();
-                element.Value.ShowMoveAverageRating();
+                ShowMoveName(element.Value);
+                ShowMoveSweatRate(element.Value);
+                ShowMoveAverageRating(element.Value);
                 Console.WriteLine();
             }
         }
@@ -158,29 +165,29 @@ namespace BornToMove
         //    ;
         //}
 
-        private Move GetMoveById(int id)
+        private MoveWithRating GetMoveById(int id)
         {
             var move = buMove.GetMoveById(id);
             return move;
         }
 
-        public void UserRating(Move move)
+        public void UserRating(MoveWithRating move)
         {
             Console.WriteLine("When you are done with the move, pls rate it from 1,0 to 5,0.");
             Console.WriteLine();
-            var moveRating = AskForNumberDouble(1.0 , 5.0);
+            var moveRating = AskForNumberDouble(1.0, 5.0);
             Console.WriteLine($"You have given the move a rating of {moveRating}.");
             Console.WriteLine();
             Console.WriteLine("Please also rate the intensitie from 1,0 to 5,0.");
             Console.WriteLine();
-            var intensitieRating = AskForNumberDouble(1.0 , 5.0);
+            var intensitieRating = AskForNumberDouble(1.0, 5.0);
             Console.WriteLine($"You have given the intensitie a rating of {intensitieRating}.");
             Console.WriteLine();
             buMove.AddRatingAndVote(move, moveRating, intensitieRating);
 
         }
 
-        public int PickMoveOptionFromList(Dictionary<int, Move> moves)
+        public int PickMoveOptionFromList(Dictionary<int, MoveWithRating> moves)
         {
             Console.WriteLine("Pick a number from the the list to get that move.");
             Console.WriteLine("If you choose the number 0 you can make a new move.");
@@ -224,13 +231,13 @@ namespace BornToMove
             string moveName = null;
             string moveDescription = null;
             int moveSweatRate = -1;
-            while (number != 0) 
+            while (number != 0)
             {
                 Console.WriteLine("To update the name type: 1, the description type: 2, the sweatRate type: 3.");
                 Console.WriteLine("To start the update type: 0");
                 Console.WriteLine();
                 number = AskForNumber(0, 3);
-            
+
                 if (number == 1)
                 {
                     Console.WriteLine("You have chosen to update the name. Type the new name.");
@@ -259,7 +266,7 @@ namespace BornToMove
                 {
                     Console.WriteLine("You have chosen to update the sweatRate. Type the new sweatRate.");
                     Console.WriteLine();
-                    moveSweatRate = AskForNumber(1,5);
+                    moveSweatRate = AskForNumber(1, 5);
                     move.SweatRate = moveSweatRate;
                 }
             }
@@ -267,7 +274,8 @@ namespace BornToMove
             {
                 Console.WriteLine("You have given no values to update.");
                 Console.WriteLine("Ending program...");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Starting update...");
                 buMove.UpdateMove(move);

@@ -20,6 +20,11 @@ namespace BornToMove.DAL
 
         public void CreateMoveRating(MoveRating moveRating)
         {
+            //moveContext.ChangeTracker.Clear();
+            //moveContext.Move.Update(move);
+            //moveContext.Entry<Move>(move).State = EntityState.Detached;
+            //moveContext.SaveChanges();
+            moveRating.Move=moveContext.Move.Single(m => m.Id ==moveRating.Move.Id);
             moveContext.Add(moveRating);
             moveContext.SaveChanges();
         }
@@ -37,17 +42,14 @@ namespace BornToMove.DAL
             moveContext.SaveChanges();
         }
 
-        public Move GetMoveById(int id)
+        public MoveWithRating GetMoveById(int id)
         {
-            var move = moveContext.Move.Select(move => new Move()
+            var move = moveContext.Move.Select(move => new MoveWithRating()
             {
-                Id = move.Id,
-                Name = move.Name,
-                Description = move.Description,
-                SweatRate = move.SweatRate,
-                Ratings = move.Ratings,
-                AverageRating = move.Ratings.DefaultIfEmpty().Average(r => r.Rating)
-            }).Single(a => a.Id == id);
+                Move = move,
+                AverageRating = move.Ratings.Select(r => r.Rating).DefaultIfEmpty().Average()
+            }).Where(move => move.Move.Id == id).First();
+            //var move = moveContext.Move.Find(id);
             return move;
         }
 
@@ -57,17 +59,13 @@ namespace BornToMove.DAL
             return move;
         }
 
-        public List<Move> GetAllMoves()
+        public List<MoveWithRating> GetAllMoves()
         {
             var test = moveContext.Move.ToList();
-            var moves = moveContext.Move.Select(move => new Move()
+            var moves = moveContext.Move.Select(move => new MoveWithRating()
             {
-                Id = move.Id,
-                Name = move.Name,
-                Description = move.Description,
-                SweatRate = move.SweatRate,
-                Ratings = move.Ratings
-                //AverageRating = move.Ratings != null ? move.Ratings.Average(r => r.Rating) : 0
+                Move = move,
+                AverageRating =move.Ratings.Select(r => r.Rating).DefaultIfEmpty().Average()
             }).ToList();
             return moves;
         }

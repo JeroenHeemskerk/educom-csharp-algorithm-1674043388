@@ -11,7 +11,7 @@ namespace BornToMove.Business
             this.moveCrud = new MoveCrud();
         }
 
-        public Move GetRandomMove() 
+        public MoveWithRating GetRandomMove() 
         {
             var moves = moveCrud.GetAllMoves();
             var countMoves = moves.Count;
@@ -20,7 +20,7 @@ namespace BornToMove.Business
             return move;
         }
 
-        public List<Move> GetListAllMoves()
+        public List<MoveWithRating> GetListAllMoves()
         {
             var moves = moveCrud.GetAllMoves();
             return moves;
@@ -40,7 +40,7 @@ namespace BornToMove.Business
             moveCrud.Update(move);
         }
 
-        public Move GetMoveById(int id)
+        public MoveWithRating GetMoveById(int id)
         {
             var move = moveCrud.GetMoveById(id);
             return move;
@@ -53,9 +53,10 @@ namespace BornToMove.Business
             return true;
         }
 
-        public void AddRatingAndVote(Move move, double rating, double vote)
+        public void AddRatingAndVote(MoveWithRating move, double rating, double vote)
         {
-            var moveRating = new MoveRating { Move = move, Rating = rating, Vote = vote };
+            var moveRating = new MoveRating { Move = move.Move, Rating = rating, Vote = vote };
+            //move.Ratings.Add(moveRating);
             moveCrud.CreateMoveRating(moveRating);
         }
 
