@@ -12,9 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BornToMove", "BornToMove\BornToMove.csproj", "{B2477277-34E3-473C-B531-804CA60AF628}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BornToMove.Business", "BornToMove.Business\BornToMove.Business.csproj", "{C09FF197-460B-459D-BDB2-701EF2998ADA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BornToMove.Business", "BornToMove.Business\BornToMove.Business.csproj", "{C09FF197-460B-459D-BDB2-701EF2998ADA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BornToMove.DAL", "BornToMove.DAL\BornToMove.DAL.csproj", "{A8B53FF9-265D-40D0-8DBC-2653D4BABEDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BornToMove.DAL", "BornToMove.DAL\BornToMove.DAL.csproj", "{A8B53FF9-265D-40D0-8DBC-2653D4BABEDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BornToMove.OrganizerTest", "BornToMove.OrganizerTest\BornToMove.OrganizerTest.csproj", "{E0814FB6-00FD-4CB3-9C47-72EDFA3BF573}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{A8B53FF9-265D-40D0-8DBC-2653D4BABEDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8B53FF9-265D-40D0-8DBC-2653D4BABEDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8B53FF9-265D-40D0-8DBC-2653D4BABEDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0814FB6-00FD-4CB3-9C47-72EDFA3BF573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0814FB6-00FD-4CB3-9C47-72EDFA3BF573}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0814FB6-00FD-4CB3-9C47-72EDFA3BF573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0814FB6-00FD-4CB3-9C47-72EDFA3BF573}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

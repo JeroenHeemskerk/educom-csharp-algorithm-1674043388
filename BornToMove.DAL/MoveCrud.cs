@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Organizer;
 
 namespace BornToMove.DAL
 {
@@ -67,7 +68,10 @@ namespace BornToMove.DAL
                 Move = move,
                 AverageRating =move.Ratings.Select(r => r.Rating).DefaultIfEmpty().Average()
             }).ToList();
-            return moves;
+            var SHS = new ShiftHighestSort<MoveWithRating>();
+            var sortedMoves = SHS.Sort(moves , new RatingsConverter());
+
+            return sortedMoves;
         }
 
         public double GetAverageRatingByMoveId(int moveId)

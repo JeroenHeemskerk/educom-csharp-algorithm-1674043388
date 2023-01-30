@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Organizer
 {
-	public class ShiftHighestSort
+	public class ShiftHighestSort<T>
     {
-        private List<int> array = new List<int>();
+        private List<T> array = new List<T>();
+        private IComparer<T> Comparer { get; set; }
         public int count = 0;
 
         //public ShiftHighestSort() { }
@@ -15,10 +16,14 @@ namespace Organizer
         /// </summary>
         /// <param name="input">The unsorted array</param>
         /// <returns>The sorted array</returns>
-        public List<int> Sort(List<int> input)
+        public List<T> Sort(List<T> input, IComparer<T> comperer)
         {
-            array = new List<int>(input);
-
+            if (comperer == null)
+            {
+                throw new ArgumentNullException(nameof(comperer));
+            }
+            array = new List<T>(input);
+            Comparer = comperer;
             SortFunction(0, array.Count - 1);
             return array;
         }
@@ -33,9 +38,9 @@ namespace Organizer
 
             for (int i = low; i <= high-1; i++) 
             {
-                if (array[i] > array[i+1])
+                if (Comparer.Compare(array[i], array[i+1])> 0)
                 {
-                    int lowerNumber = array[i+1];
+                    T lowerNumber = array[i+1];
                     array[i+1] = array[i];
                     array[i] = lowerNumber;
                 }

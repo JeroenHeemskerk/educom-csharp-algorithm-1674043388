@@ -9,10 +9,10 @@ namespace Organizer
         public static void Main(string[] args)
         {
             var Program = new Program();
-            var ShiftHighestSort = new ShiftHighestSort();
+            var ShiftHighestSort = new ShiftHighestSort<int>();
 
             List<int> rtnList = Program.ListRandomIntegers(10);
-            List<int> sortedList = ShiftHighestSort.Sort(rtnList);
+            List<int> sortedList = ShiftHighestSort.Sort(rtnList, Comparer<int>.Default);
             ShowList("Random list", rtnList);
             ShowList("Sorted list", sortedList);
             Console.WriteLine("Sorted list valid: " + Program.IsListSorted(sortedList));
